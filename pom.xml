@@ -11,6 +11,7 @@
 
     <modules>
         <module>debezium-connector</module>
+        <module>flink-cdc-connector</module>
     </modules>
 
     <properties>
