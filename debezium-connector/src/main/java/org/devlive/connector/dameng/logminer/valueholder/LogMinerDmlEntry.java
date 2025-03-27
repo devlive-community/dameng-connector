@@ -1,0 +1,110 @@
+/*
+ * Copyright Debezium Authors.
+ *
+ * Licensed under the Apache Software License version 2.0, available at http://www.apache.org/licenses/LICENSE-2.0
+ */
+package org.devlive.connector.dameng.logminer.valueholder;
+
+import org.devlive.connector.dameng.Scn;
+import io.debezium.data.Envelope;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+public interface LogMinerDmlEntry
+{
+    /**
+     * This getter
+     *
+     * @return old(current) values of the database record.
+     * They represent values in WHERE clauses
+     */
+    List<LogMinerColumnValue> getOldValues();
+
+    /**
+     * this getter
+     *
+     * @return new values to be applied to the database record
+     * Those values are applicable for INSERT and UPDATE statements
+     */
+    List<LogMinerColumnValue> getNewValues();
+
+    /**
+     * this getter
+     *
+     * @return Envelope.Operation enum
+     */
+    Envelope.Operation getCommandType();
+
+    /**
+     * the scn obtained from a LogMiner entry.
+     * This SCN is not a final SCN, just a candidate.
+     * The actual SCN will be assigned after commit
+     *
+     * @return it's value
+     */
+    Scn getScn();
+
+    /**
+     * sets scn obtained from a LogMiner entry
+     *
+     * @param scn it's value
+     */
+    void setScn(Scn scn);
+
+    /**
+     * @return transaction ID
+     */
+    String getTransactionId();
+
+    /**
+     * @param id unique transaction ID
+     */
+    void setTransactionId(String id);
+
+    /**
+     * @return schema name
+     */
+    String getObjectOwner();
+
+    /**
+     * Sets schema owner
+     *
+     * @param name schema owner
+     */
+    void setObjectOwner(String name);
+
+    /**
+     * @return table name
+     */
+    String getObjectName();
+
+    /**
+     * Sets table name
+     *
+     * @param name table name
+     */
+    void setObjectName(String name);
+
+    /**
+     * @return database change time of this logical record
+     */
+    Timestamp getSourceTime();
+
+    /**
+     * Sets the time of the database change
+     *
+     * @param changeTime the time of the change
+     */
+    void setSourceTime(Timestamp changeTime);
+
+    /**
+     * @return unique row identifier
+     */
+    String getRowId();
+
+    /**
+     * @param rowId unique row identifier
+     */
+    void setRowId(String rowId);
+}

@@ -4,23 +4,90 @@
     <groupId>org.devlive.connector</groupId>
     <artifactId>dameng-connector</artifactId>
     <packaging>pom</packaging>
-    <version>2025.1.0</version>
+    <version>2025.1.1</version>
 
     <name>dameng-connector</name>
     <description>Connector for dameng database</description>
+    <url>https://github.com/devlive-community/dameng-connector</url>
 
     <modules>
         <module>debezium-connector</module>
         <module>flink-cdc-connector</module>
     </modules>
 
+    <scm>
+        <url>https://github.com/devlive-community/dameng-connector</url>
+        <connection>scm:git:git://github.com/devlive-community/dameng-connector</connection>
+        <tag>dameng,dameng8,database,flink,flink cdc</tag>
+    </scm>
+
+    <organization>
+        <name>devlive-community</name>
+        <url>https://github.com/devlive-community</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <name>qianmoq</name>
+            <email>shicheng@devlive.org</email>
+            <roles>
+                <role>Owner</role>
+            </roles>
+            <organization>devlive</organization>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>https://projectlombok.org/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <properties>
         <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <plugin.maven.checkstyle.version>3.3.1</plugin.maven.checkstyle.version>
         <plugin.maven.findbugs.version>4.8.5.0</plugin.maven.findbugs.version>
         <plugin.maven.compiler.version>3.13.0</plugin.maven.compiler.version>
+        <plugin.maven.gpg.version>3.1.0</plugin.maven.gpg.version>
+        <plugin.maven.source.version>2.2.1</plugin.maven.source.version>
+        <plugin.maven.javadoc.version>3.5.0</plugin.maven.javadoc.version>
+        <plugin.maven.nexus.version>1.6</plugin.maven.nexus.version>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>deploy</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${plugin.maven.gpg.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Prevent `gpg` from using pinentry programs -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -110,6 +177,67 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${plugin.maven.source.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${plugin.maven.javadoc.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <tags>
+                        <tag>
+                            <name>Description</name>
+                            <placement>test</placement>
+                            <head>description</head>
+                        </tag>
+                    </tags>
+                    <additionalOptions>-Xdoclint:none</additionalOptions>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${plugin.maven.gpg.version}</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.4.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <tokenAuth>true</tokenAuth>
+                    <publishingServerId>qianmoq-ossrh</publishingServerId>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
 </project>

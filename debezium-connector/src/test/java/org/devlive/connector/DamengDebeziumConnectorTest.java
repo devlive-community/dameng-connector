@@ -1,6 +1,6 @@
 package org.devlive.connector;
 
-import io.debezium.connector.dameng.DamengConnector;
+import org.devlive.connector.dameng.DamengConnector;
 import io.debezium.engine.ChangeEvent;
 import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.format.Json;
