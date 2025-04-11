@@ -1,9 +1,9 @@
 package org.devlive.connector;
 
-import io.debezium.connector.dameng.DamengConnector;
 import org.apache.flink.cdc.debezium.DebeziumDeserializationSchema;
 import org.apache.flink.cdc.debezium.DebeziumSourceFunction;
 import org.apache.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
+import org.devlive.connector.dameng.DamengConnector;
 
 import java.util.Properties;
 

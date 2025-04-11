@@ -5,8 +5,6 @@
  */
 package org.devlive.connector.dameng.antlr.listener;
 
-import org.devlive.connector.dameng.DamengValueConverters;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValueWrapper;
 import io.debezium.ddl.parser.oracle.generated.PlSqlParser;
 import io.debezium.relational.Column;
 import io.debezium.relational.Table;
@@ -14,6 +12,8 @@ import io.debezium.relational.ValueConverter;
 import org.apache.kafka.connect.data.Field;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.SchemaBuilder;
+import org.devlive.connector.dameng.DamengValueConverters;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValueWrapper;
 
 import java.util.Map;
 

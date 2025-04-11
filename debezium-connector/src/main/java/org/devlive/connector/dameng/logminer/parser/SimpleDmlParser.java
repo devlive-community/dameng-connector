@@ -5,13 +5,6 @@
  */
 package org.devlive.connector.dameng.logminer.parser;
 
-import org.devlive.connector.dameng.DamengValueConverters;
-import org.devlive.connector.dameng.antlr.listener.ParserUtils;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValue;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValueImpl;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValueWrapper;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntryImpl;
 import io.debezium.data.Envelope;
 import io.debezium.relational.Column;
 import io.debezium.relational.Table;
@@ -30,6 +23,13 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.update.Update;
+import org.devlive.connector.dameng.DamengValueConverters;
+import org.devlive.connector.dameng.antlr.listener.ParserUtils;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValue;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValueImpl;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValueWrapper;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

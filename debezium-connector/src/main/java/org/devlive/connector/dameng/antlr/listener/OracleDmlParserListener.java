@@ -8,11 +8,11 @@ package org.devlive.connector.dameng.antlr.listener;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.debezium.antlr.AntlrDdlParserListener;
 import io.debezium.antlr.ProxyParseTreeListenerUtil;
-import org.devlive.connector.dameng.antlr.OracleDmlParser;
 import io.debezium.ddl.parser.oracle.generated.PlSqlParserBaseListener;
 import io.debezium.text.ParsingException;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.devlive.connector.dameng.antlr.OracleDmlParser;
 
 import java.util.ArrayList;
 import java.util.Collection;

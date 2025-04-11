@@ -5,7 +5,6 @@
  */
 package org.devlive.connector.dameng.antlr.listener;
 
-import org.devlive.connector.dameng.antlr.OracleDdlParser;
 import io.debezium.ddl.parser.oracle.generated.PlSqlParser;
 import io.debezium.relational.Column;
 import io.debezium.relational.ColumnEditor;
@@ -13,6 +12,7 @@ import io.debezium.relational.TableEditor;
 import io.debezium.relational.TableId;
 import io.debezium.text.ParsingException;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.devlive.connector.dameng.antlr.OracleDdlParser;
 
 import java.util.ArrayList;
 import java.util.List;

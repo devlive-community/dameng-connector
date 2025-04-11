@@ -5,10 +5,10 @@
  */
 package org.devlive.connector.dameng.antlr.listener;
 
-import org.devlive.connector.dameng.antlr.OracleDmlParser;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValueWrapper;
 import io.debezium.ddl.parser.oracle.generated.PlSqlParser;
 import io.debezium.relational.Column;
+import org.devlive.connector.dameng.antlr.OracleDmlParser;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValueWrapper;
 
 /**
  * This class parses recursively logical expression tree for DELETE and UPDATE statements

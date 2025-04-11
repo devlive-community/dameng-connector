@@ -6,12 +6,12 @@
 package org.devlive.connector.dameng.logminer.parser;
 
 import io.debezium.DebeziumException;
+import io.debezium.data.Envelope;
+import io.debezium.relational.Table;
 import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValue;
 import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValueImpl;
 import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
 import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntryImpl;
-import io.debezium.data.Envelope;
-import io.debezium.relational.Table;
 
 import java.util.ArrayList;
 import java.util.Collections;

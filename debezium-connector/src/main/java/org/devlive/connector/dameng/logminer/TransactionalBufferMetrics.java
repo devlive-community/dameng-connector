@@ -7,8 +7,8 @@ package org.devlive.connector.dameng.logminer;
 
 import io.debezium.annotation.ThreadSafe;
 import io.debezium.connector.common.CdcSourceTaskContext;
-import org.devlive.connector.dameng.Scn;
 import io.debezium.metrics.Metrics;
+import org.devlive.connector.dameng.Scn;
 
 import java.time.Duration;
 import java.time.Instant;

@@ -7,7 +7,6 @@ package org.devlive.connector.dameng;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.debezium.config.Configuration;
-import org.devlive.connector.dameng.logminer.LogMinerStreamingChangeEventSource;
 import io.debezium.pipeline.ErrorHandler;
 import io.debezium.pipeline.EventDispatcher;
 import io.debezium.pipeline.source.snapshot.incremental.IncrementalSnapshotChangeEventSource;
@@ -19,6 +18,7 @@ import io.debezium.pipeline.source.spi.StreamingChangeEventSource;
 import io.debezium.relational.TableId;
 import io.debezium.schema.DataCollectionId;
 import io.debezium.util.Clock;
+import org.devlive.connector.dameng.logminer.LogMinerStreamingChangeEventSource;
 
 import java.util.Optional;
 

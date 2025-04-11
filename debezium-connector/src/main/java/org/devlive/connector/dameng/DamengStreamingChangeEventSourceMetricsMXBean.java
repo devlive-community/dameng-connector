@@ -5,8 +5,8 @@
  */
 package org.devlive.connector.dameng;
 
-import org.devlive.connector.dameng.logminer.HistoryRecorder;
 import io.debezium.pipeline.metrics.StreamingChangeEventSourceMetricsMXBean;
+import org.devlive.connector.dameng.logminer.HistoryRecorder;
 
 import java.util.Set;
 
