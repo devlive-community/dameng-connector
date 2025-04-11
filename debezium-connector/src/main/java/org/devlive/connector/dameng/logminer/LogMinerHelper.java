@@ -6,17 +6,17 @@
 package org.devlive.connector.dameng.logminer;
 
 import io.debezium.DebeziumException;
-import org.devlive.connector.dameng.DamengConnection;
-import org.devlive.connector.dameng.DamengConnectorConfig;
-import org.devlive.connector.dameng.DamengDatabaseSchema;
-import org.devlive.connector.dameng.DamengStreamingChangeEventSourceMetrics;
-import org.devlive.connector.dameng.Scn;
 import io.debezium.jdbc.JdbcConfiguration;
 import io.debezium.jdbc.JdbcConnection;
 import io.debezium.relational.TableId;
 import io.debezium.util.Clock;
 import io.debezium.util.Metronome;
 import io.debezium.util.Strings;
+import org.devlive.connector.dameng.DamengConnection;
+import org.devlive.connector.dameng.DamengConnectorConfig;
+import org.devlive.connector.dameng.DamengDatabaseSchema;
+import org.devlive.connector.dameng.DamengStreamingChangeEventSourceMetrics;
+import org.devlive.connector.dameng.Scn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

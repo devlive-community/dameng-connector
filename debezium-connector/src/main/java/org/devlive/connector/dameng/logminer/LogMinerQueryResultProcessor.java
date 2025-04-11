@@ -6,6 +6,12 @@
 package org.devlive.connector.dameng.logminer;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.debezium.data.Envelope.Operation;
+import io.debezium.pipeline.EventDispatcher;
+import io.debezium.pipeline.source.spi.ChangeEventSource.ChangeEventSourceContext;
+import io.debezium.relational.Table;
+import io.debezium.relational.TableId;
+import io.debezium.util.Clock;
 import org.devlive.connector.dameng.DamengConnection;
 import org.devlive.connector.dameng.DamengConnectorConfig;
 import org.devlive.connector.dameng.DamengConnectorConfig.LogMiningDmlParser;
@@ -20,12 +26,6 @@ import org.devlive.connector.dameng.logminer.parser.DmlParserException;
 import org.devlive.connector.dameng.logminer.parser.LogMinerDmlParser;
 import org.devlive.connector.dameng.logminer.parser.SimpleDmlParser;
 import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
-import io.debezium.data.Envelope.Operation;
-import io.debezium.pipeline.EventDispatcher;
-import io.debezium.pipeline.source.spi.ChangeEventSource.ChangeEventSourceContext;
-import io.debezium.relational.Table;
-import io.debezium.relational.TableId;
-import io.debezium.util.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

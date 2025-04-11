@@ -6,14 +6,14 @@
 package org.devlive.connector.dameng.logminer;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.devlive.connector.dameng.BaseChangeRecordEmitter;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValue;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
 import io.debezium.data.Envelope.Operation;
 import io.debezium.pipeline.spi.OffsetContext;
 import io.debezium.pipeline.spi.Partition;
 import io.debezium.relational.Table;
 import io.debezium.util.Clock;
+import org.devlive.connector.dameng.BaseChangeRecordEmitter;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerColumnValue;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
 
 import java.util.Arrays;
 import java.util.List;

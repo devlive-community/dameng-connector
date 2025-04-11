@@ -5,10 +5,10 @@
  */
 package org.devlive.connector.dameng.antlr.listener;
 
-import org.devlive.connector.dameng.antlr.OracleDdlParser;
 import io.debezium.ddl.parser.oracle.generated.PlSqlParser;
 import io.debezium.ddl.parser.oracle.generated.PlSqlParserBaseListener;
 import io.debezium.relational.TableId;
+import org.devlive.connector.dameng.antlr.OracleDdlParser;
 
 import static org.devlive.connector.dameng.antlr.listener.ParserUtils.getTableName;
 

@@ -5,11 +5,11 @@
  */
 package org.devlive.connector.dameng.logminer;
 
+import io.debezium.pipeline.spi.SchemaChangeEventEmitter;
+import io.debezium.relational.TableId;
 import org.devlive.connector.dameng.BaseOracleSchemaChangeEventEmitter;
 import org.devlive.connector.dameng.DamengOffsetContext;
 import org.devlive.connector.dameng.logminer.valueholder.LogMinerDdlEntry;
-import io.debezium.pipeline.spi.SchemaChangeEventEmitter;
-import io.debezium.relational.TableId;
 
 /**
  * {@link SchemaChangeEventEmitter} implementation based on Oracle LogMiner utility.

@@ -6,18 +6,18 @@
 package org.devlive.connector.dameng.logminer;
 
 import io.debezium.annotation.NotThreadSafe;
-import org.devlive.connector.dameng.DamengDatabaseSchema;
-import org.devlive.connector.dameng.DamengOffsetContext;
-import org.devlive.connector.dameng.DamengStreamingChangeEventSourceMetrics;
-import org.devlive.connector.dameng.MapBackedPartition;
-import org.devlive.connector.dameng.Scn;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
 import io.debezium.pipeline.ErrorHandler;
 import io.debezium.pipeline.EventDispatcher;
 import io.debezium.pipeline.source.spi.ChangeEventSource;
 import io.debezium.relational.TableId;
 import io.debezium.util.Clock;
 import org.apache.kafka.connect.errors.DataException;
+import org.devlive.connector.dameng.DamengDatabaseSchema;
+import org.devlive.connector.dameng.DamengOffsetContext;
+import org.devlive.connector.dameng.DamengStreamingChangeEventSourceMetrics;
+import org.devlive.connector.dameng.MapBackedPartition;
+import org.devlive.connector.dameng.Scn;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

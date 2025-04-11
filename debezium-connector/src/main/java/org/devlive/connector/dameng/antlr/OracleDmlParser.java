@@ -9,9 +9,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.debezium.antlr.AntlrDdlParser;
 import io.debezium.antlr.AntlrDdlParserListener;
 import io.debezium.antlr.DataTypeResolver;
-import org.devlive.connector.dameng.DamengValueConverters;
-import org.devlive.connector.dameng.antlr.listener.OracleDmlParserListener;
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
 import io.debezium.ddl.parser.oracle.generated.PlSqlLexer;
 import io.debezium.ddl.parser.oracle.generated.PlSqlParser;
 import io.debezium.relational.SystemVariables;
@@ -19,6 +16,9 @@ import io.debezium.relational.Tables;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.devlive.connector.dameng.DamengValueConverters;
+import org.devlive.connector.dameng.antlr.listener.OracleDmlParserListener;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
 
 /**
  * This is the main Oracle Antlr DML parser

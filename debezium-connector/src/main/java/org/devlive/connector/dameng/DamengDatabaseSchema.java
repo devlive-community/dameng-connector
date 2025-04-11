@@ -5,7 +5,6 @@
  */
 package org.devlive.connector.dameng;
 
-import org.devlive.connector.dameng.antlr.OracleDdlParser;
 import io.debezium.relational.HistorizedRelationalDatabaseSchema;
 import io.debezium.relational.Table;
 import io.debezium.relational.TableId;
@@ -17,6 +16,7 @@ import io.debezium.schema.SchemaChangeEvent;
 import io.debezium.schema.SchemaChangeEvent.SchemaChangeEventType;
 import io.debezium.schema.TopicSelector;
 import io.debezium.util.SchemaNameAdjuster;
+import org.devlive.connector.dameng.antlr.OracleDdlParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

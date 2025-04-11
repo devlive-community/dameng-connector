@@ -6,13 +6,13 @@
 package org.devlive.connector.dameng;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.devlive.connector.dameng.antlr.OracleDdlParser;
 import io.debezium.pipeline.spi.SchemaChangeEventEmitter;
 import io.debezium.relational.Table;
 import io.debezium.relational.TableId;
 import io.debezium.relational.Tables;
 import io.debezium.schema.SchemaChangeEvent;
 import io.debezium.schema.SchemaChangeEvent.SchemaChangeEventType;
+import org.devlive.connector.dameng.antlr.OracleDdlParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

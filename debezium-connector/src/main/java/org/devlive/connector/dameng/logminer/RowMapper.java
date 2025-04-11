@@ -6,9 +6,9 @@
 package org.devlive.connector.dameng.logminer;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.devlive.connector.dameng.Scn;
 import io.debezium.relational.TableId;
 import io.debezium.util.HexConverter;
+import org.devlive.connector.dameng.Scn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

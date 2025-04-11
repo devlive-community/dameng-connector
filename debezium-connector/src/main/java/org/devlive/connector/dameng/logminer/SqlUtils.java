@@ -5,10 +5,10 @@
  */
 package org.devlive.connector.dameng.logminer;
 
-import org.devlive.connector.dameng.DamengConnectorConfig;
-import org.devlive.connector.dameng.Scn;
 import io.debezium.relational.TableId;
 import io.debezium.util.Strings;
+import org.devlive.connector.dameng.DamengConnectorConfig;
+import org.devlive.connector.dameng.Scn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

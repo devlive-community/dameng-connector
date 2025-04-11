@@ -5,9 +5,9 @@
  */
 package org.devlive.connector.dameng.logminer;
 
+import io.debezium.jdbc.JdbcConfiguration;
 import org.devlive.connector.dameng.DamengStreamingChangeEventSourceMetrics;
 import org.devlive.connector.dameng.Scn;
-import io.debezium.jdbc.JdbcConfiguration;
 
 import java.sql.Timestamp;
 

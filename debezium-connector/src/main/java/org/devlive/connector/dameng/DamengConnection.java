@@ -8,7 +8,6 @@ package org.devlive.connector.dameng;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.debezium.config.Configuration;
 import io.debezium.config.Field;
-import org.devlive.connector.dameng.DamengConnectorConfig.ConnectorAdapter;
 import io.debezium.jdbc.JdbcConfiguration;
 import io.debezium.jdbc.JdbcConnection;
 import io.debezium.relational.Column;
@@ -18,6 +17,7 @@ import io.debezium.relational.TableId;
 import io.debezium.relational.Tables;
 import io.debezium.relational.Tables.ColumnNameFilter;
 import io.debezium.relational.Tables.TableFilter;
+import org.devlive.connector.dameng.DamengConnectorConfig.ConnectorAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

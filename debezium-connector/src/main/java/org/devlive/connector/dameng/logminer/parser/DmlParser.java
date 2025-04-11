@@ -5,8 +5,8 @@
  */
 package org.devlive.connector.dameng.logminer.parser;
 
-import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
 import io.debezium.relational.Table;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
 
 /**
  * Contract for a DML parser for LogMiner.
