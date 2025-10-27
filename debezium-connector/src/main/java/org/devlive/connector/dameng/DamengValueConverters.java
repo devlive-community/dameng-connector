@@ -288,6 +288,9 @@ public class DamengValueConverters
     @Override
     protected Object convertInteger(Column column, Field fieldDefn, Object data)
     {
+        if (data instanceof String) {
+            data = data.toString().trim();
+        }
         return super.convertInteger(column, fieldDefn, data);
     }
 
