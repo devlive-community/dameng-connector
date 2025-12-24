@@ -24,14 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Buffer that stores transactions and related callbacks that will be executed when a transaction commits or discarded
@@ -64,7 +57,7 @@ public final class TransactionalBuffer
      */
     TransactionalBuffer(DamengDatabaseSchema schema, Clock clock, ErrorHandler errorHandler, DamengStreamingChangeEventSourceMetrics streamingMetrics, long autoCommitTimeoutMs)
     {
-        this.transactions = new HashMap<>();
+        this.transactions = new LinkedHashMap<>();
         this.schema = schema;
         this.clock = clock;
         this.errorHandler = errorHandler;
@@ -273,7 +266,7 @@ public final class TransactionalBuffer
     )
     {
         Instant now = Instant.now();
-        Set<String> transactionsToCommit = new HashSet<>();
+        Set<String> transactionsToCommit = new LinkedHashSet<>();
 
         // 找出所有超过指定时间未更新的事务
         for (Map.Entry<String, Transaction> entry : transactions.entrySet()) {
