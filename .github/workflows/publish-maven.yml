@@ -3,27 +3,32 @@ name: Publish via Maven Central
 on:
   release:
     types: [ published ]
+  workflow_dispatch:
 
 jobs:
   publish-maven-central:
+    name: Publish release to Central Portal
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
-      - name: Install Java and Maven
-        uses: actions/setup-java@v3
+      - name: Set up JDK and Maven settings
+        uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'temurin'
+          cache: 'maven'
+          # Writes a settings.xml server entry matching the pom's publishingServerId
+          server-id: qianmoq-ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_SECRET }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish to the Maven Central Repository
-        uses: samuelmeuli/action-maven-publish@v1
-        with:
-          maven_profiles: 'deploy'
-          maven_goals_phases: 'clean deploy'
-          maven_args: '-DskipTests'
-          gpg_private_key: ${{ secrets.GPG_SECRET }}
-          gpg_passphrase: ${{ secrets.GPG_PASSWORD }}
-          nexus_username: ${{ secrets.OSSRH_USERNAME }}
-          nexus_password: ${{ secrets.OSSRH_TOKEN }}
+        run: mvn -B -ntp -Pdeploy clean deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSWORD }}
