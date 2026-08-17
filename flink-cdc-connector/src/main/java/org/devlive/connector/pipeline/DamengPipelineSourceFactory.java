@@ -3,7 +3,6 @@ package org.devlive.connector.pipeline;
 import org.apache.flink.cdc.common.configuration.ConfigOption;
 import org.apache.flink.cdc.common.configuration.ConfigOptions;
 import org.apache.flink.cdc.common.factories.DataSourceFactory;
-import org.apache.flink.cdc.common.factories.Factory;
 import org.apache.flink.cdc.common.source.DataSource;
 
 import java.util.HashSet;

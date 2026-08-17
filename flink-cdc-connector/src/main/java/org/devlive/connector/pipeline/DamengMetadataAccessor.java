@@ -2,7 +2,6 @@ package org.devlive.connector.pipeline;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.flink.cdc.common.event.TableId;
-import org.apache.flink.cdc.common.schema.Column;
 import org.apache.flink.cdc.common.schema.Schema;
 import org.apache.flink.cdc.common.source.MetadataAccessor;
 import org.apache.flink.cdc.common.types.DataTypes;

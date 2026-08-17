@@ -1,7 +1,6 @@
 package org.devlive.connector.pipeline;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.flink.cdc.common.schema.Column;
 import org.apache.flink.cdc.common.schema.Schema;
 import org.apache.flink.cdc.common.types.DataType;
 import org.apache.flink.cdc.common.types.DataTypes;
