@@ -1,0 +1,28 @@
+name: Build
+
+on:
+  push:
+    branches: [ dev, main, master ]
+  pull_request:
+    branches: [ dev, main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build, check and test
+        # package runs the full quality gate: checkstyle (validate), compile, tests,
+        # spotbugs and the source/javadoc jars. gpg signing is skipped (no keys in CI).
+        run: mvn -B -ntp clean package -Dgpg.skip=true
