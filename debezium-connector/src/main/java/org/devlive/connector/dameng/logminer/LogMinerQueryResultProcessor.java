@@ -25,6 +25,8 @@ import org.devlive.connector.dameng.logminer.parser.DmlParser;
 import org.devlive.connector.dameng.logminer.parser.DmlParserException;
 import org.devlive.connector.dameng.logminer.parser.LogMinerDmlParser;
 import org.devlive.connector.dameng.logminer.parser.SimpleDmlParser;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerDdlEntry;
+import org.devlive.connector.dameng.logminer.valueholder.LogMinerDdlEntryImpl;
 import org.devlive.connector.dameng.logminer.valueholder.LogMinerDmlEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,9 +171,9 @@ class LogMinerQueryResultProcessor
 
             // DDL
             if (operationCode == RowMapper.DDL) {
-                // todo: DDL operations are not yet supported during streaming while using LogMiner.
                 historyRecorder.record(scn, tableName, segOwner, operationCode, changeTime, txId, 0, redoSql);
                 LOGGER.info("DDL: {}, REDO_SQL: {}", logMessage, redoSql);
+                handleSchemaChange(resultSet, scn, changeTime, redoSql);
                 continue;
             }
 
@@ -253,6 +255,55 @@ class LogMinerQueryResultProcessor
         historyRecorder.flush();
 
         transactionalBuffer.checkAndAutoCommitTransactions(offsetContext, context, dispatcher);
+    }
+
+    /**
+     * Handles a DDL schema change captured during streaming.
+     * <p>
+     * The parsed DDL is dispatched as a schema change event so the affected table is registered with
+     * the connector. Without this, a {@code CREATE TABLE} followed by inserts would fail with
+     * "table ... that is not known to this connector, skipping" (issue #12).
+     *
+     * @param resultSet the LogMiner result set positioned on the DDL row
+     * @param scn the SCN of the DDL
+     * @param changeTime the change time of the DDL
+     * @param redoSql the DDL redo SQL
+     */
+    private void handleSchemaChange(ResultSet resultSet, Scn scn, Timestamp changeTime, String redoSql)
+    {
+        if (redoSql == null) {
+            return;
+        }
+
+        try {
+            final TableId tableId = RowMapper.getTableId(connectorConfig.getCatalogName(), resultSet);
+            if (tableId.table() == null || tableId.table().isEmpty()) {
+                LOGGER.trace("Skipping DDL without a table reference: {}", redoSql);
+                return;
+            }
+
+            // DDL is not wrapped in a transaction; advance the offset so a restart resumes after it.
+            offsetContext.setScn(scn);
+            offsetContext.setCommitScn(scn);
+            offsetContext.setSourceTime(changeTime.toInstant());
+            offsetContext.setTableId(tableId);
+
+            final LogMinerDdlEntry ddlEntry = LogMinerDdlEntryImpl.fromRedoSql(redoSql);
+            final MapBackedPartition partition = offsetContext.asPartition();
+            dispatcher.dispatchSchemaChangeEvent(
+                    partition,
+                    tableId,
+                    new LogMinerSchemaChangeEventEmitter(offsetContext, tableId, ddlEntry));
+        }
+        catch (InterruptedException e) {
+            LogMinerHelper.logError(streamingMetrics, "Thread interrupted while dispatching schema change for '{}'", redoSql, e);
+            Thread.currentThread().interrupt();
+        }
+        catch (Exception e) {
+            // A single unparseable DDL should not stop the mining loop; log and continue.
+            LogMinerHelper.logWarn(streamingMetrics, "Failed to process DDL '{}', skipping. Error: {}", redoSql, e.getMessage());
+            LOGGER.debug("DDL processing failed", e);
+        }
     }
 
     private boolean hasNext(ResultSet resultSet)
