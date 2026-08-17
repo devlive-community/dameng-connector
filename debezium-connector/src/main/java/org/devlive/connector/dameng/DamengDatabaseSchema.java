@@ -73,19 +73,24 @@ public class DamengDatabaseSchema
 
         // just a single table per DDL event for Oracle
         Table table = schemaChange.getTables().iterator().next();
-        buildAndRegisterSchema(table);
-        tables().overwriteTable(table);
 
         TableChanges tableChanges = null;
         if (schemaChange.getType() == SchemaChangeEventType.CREATE) {
+            buildAndRegisterSchema(table);
+            tables().overwriteTable(table);
             tableChanges = new TableChanges();
             tableChanges.create(table);
         }
         else if (schemaChange.getType() == SchemaChangeEventType.ALTER) {
+            buildAndRegisterSchema(table);
+            tables().overwriteTable(table);
             tableChanges = new TableChanges();
             tableChanges.alter(table);
         }
         else if (schemaChange.getType() == SchemaChangeEventType.DROP) {
+            // Remove the table from the schema; re-registering it would keep a dropped table alive.
+            removeSchema(table.id());
+            tables().removeTable(table.id());
             tableChanges = new TableChanges();
             tableChanges.drop(table);
         }

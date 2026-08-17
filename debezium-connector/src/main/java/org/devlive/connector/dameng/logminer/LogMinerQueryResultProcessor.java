@@ -293,7 +293,7 @@ class LogMinerQueryResultProcessor
             dispatcher.dispatchSchemaChangeEvent(
                     partition,
                     tableId,
-                    new LogMinerSchemaChangeEventEmitter(offsetContext, tableId, ddlEntry));
+                    new LogMinerSchemaChangeEventEmitter(offsetContext, tableId, ddlEntry, schema));
         }
         catch (InterruptedException e) {
             LogMinerHelper.logError(streamingMetrics, "Thread interrupted while dispatching schema change for '{}'", redoSql, e);

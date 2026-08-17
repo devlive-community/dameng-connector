@@ -35,10 +35,11 @@ public class BaseOracleSchemaChangeEventEmitter
     private final String objectOwner;
     private final String ddlText;
     private final String commandType;
+    private final DamengDatabaseSchema schema;
 
     public BaseOracleSchemaChangeEventEmitter(DamengOffsetContext offsetContext, TableId tableId,
             String sourceDatabaseName, String objectOwner, String ddlText,
-            String commandType)
+            String commandType, DamengDatabaseSchema schema)
     {
         this.offsetContext = offsetContext;
         this.tableId = tableId;
@@ -46,6 +47,7 @@ public class BaseOracleSchemaChangeEventEmitter
         this.objectOwner = objectOwner;
         this.ddlText = ddlText;
         this.commandType = commandType;
+        this.schema = schema;
     }
 
     @Override
@@ -57,23 +59,29 @@ public class BaseOracleSchemaChangeEventEmitter
             return;
         }
 
-        Tables tables = new Tables();
+        // Cache the table definition prior to parsing; it is needed to describe a DROP (the parser
+        // removes the table) and lets ALTER be applied against the already-known table.
+        final Table tableBefore = schema != null ? schema.tableFor(tableId) : null;
 
-        OracleDdlParser parser = new OracleDdlParser();
+        // Seed a working copy with the existing table so ALTER/DROP can resolve it, then drain the
+        // seeding change so drainChanges() below reflects only the parsed DDL.
+        final Tables tables = new Tables();
+        if (tableBefore != null) {
+            tables.overwriteTable(tableBefore);
+            tables.drainChanges();
+        }
+
+        final OracleDdlParser parser = new OracleDdlParser();
         parser.setCurrentDatabase(sourceDatabaseName);
         parser.setCurrentSchema(objectOwner);
         parser.parse(ddlText, tables);
 
-        Set<TableId> changedTableIds = tables.drainChanges();
+        final Set<TableId> changedTableIds = tables.drainChanges();
         if (changedTableIds.isEmpty()) {
             throw new IllegalArgumentException("Couldn't parse DDL statement " + ddlText);
         }
 
-        Table table = tables.forTable(tableId);
-
-        // 使用适合事件类型的工厂方法创建SchemaChangeEvent
-        SchemaChangeEvent event;
-
+        final SchemaChangeEvent event;
         switch (eventType) {
             case CREATE:
                 event = SchemaChangeEvent.ofCreate(
@@ -82,7 +90,7 @@ public class BaseOracleSchemaChangeEventEmitter
                         sourceDatabaseName,
                         objectOwner,
                         ddlText,
-                        table,
+                        tables.forTable(tableId),
                         false);
                 break;
             case ALTER:
@@ -92,35 +100,24 @@ public class BaseOracleSchemaChangeEventEmitter
                         sourceDatabaseName,
                         objectOwner,
                         ddlText,
-                        table);
+                        tables.forTable(tableId));
                 break;
             case DROP:
+                if (tableBefore == null) {
+                    LOGGER.warn("Ignoring DROP for unknown table {}: {}", tableId, ddlText);
+                    return;
+                }
                 event = SchemaChangeEvent.ofDrop(
                         offsetContext.asPartition(),
                         offsetContext,
                         sourceDatabaseName,
                         objectOwner,
                         ddlText,
-                        table);
-                break;
-            case DATABASE:
-                event = SchemaChangeEvent.ofDatabase(
-                        offsetContext.asPartition(),
-                        offsetContext,
-                        sourceDatabaseName,
-                        ddlText,
-                        false);
+                        tableBefore);
                 break;
             default:
-                event = SchemaChangeEvent.of(
-                        eventType,
-                        offsetContext.asPartition(),
-                        offsetContext,
-                        sourceDatabaseName,
-                        objectOwner,
-                        ddlText,
-                        table,
-                        false);
+                LOGGER.debug("Ignoring DDL event of type {}: {}", eventType, ddlText);
+                return;
         }
 
         receiver.schemaChangeEvent(event);
@@ -132,11 +129,9 @@ public class BaseOracleSchemaChangeEventEmitter
             case "CREATE TABLE":
                 return SchemaChangeEventType.CREATE;
             case "ALTER TABLE":
-                LOGGER.warn("ALTER TABLE not yet implemented");
-                break;
+                return SchemaChangeEventType.ALTER;
             case "DROP TABLE":
-                LOGGER.warn("DROP TABLE not yet implemented");
-                break;
+                return SchemaChangeEventType.DROP;
             default:
                 LOGGER.debug("Ignoring DDL event of type {}", commandType);
         }

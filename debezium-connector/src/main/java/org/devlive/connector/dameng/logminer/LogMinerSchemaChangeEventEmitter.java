@@ -8,6 +8,7 @@ package org.devlive.connector.dameng.logminer;
 import io.debezium.pipeline.spi.SchemaChangeEventEmitter;
 import io.debezium.relational.TableId;
 import org.devlive.connector.dameng.BaseOracleSchemaChangeEventEmitter;
+import org.devlive.connector.dameng.DamengDatabaseSchema;
 import org.devlive.connector.dameng.DamengOffsetContext;
 import org.devlive.connector.dameng.logminer.valueholder.LogMinerDdlEntry;
 
@@ -17,13 +18,15 @@ import org.devlive.connector.dameng.logminer.valueholder.LogMinerDdlEntry;
 public class LogMinerSchemaChangeEventEmitter
         extends BaseOracleSchemaChangeEventEmitter
 {
-    public LogMinerSchemaChangeEventEmitter(DamengOffsetContext offsetContext, TableId tableId, LogMinerDdlEntry ddlLcr)
+    public LogMinerSchemaChangeEventEmitter(DamengOffsetContext offsetContext, TableId tableId, LogMinerDdlEntry ddlLcr,
+            DamengDatabaseSchema schema)
     {
         super(offsetContext,
                 tableId,
                 tableId.catalog(), // todo tableId should be enough
                 tableId.schema(), // todo same here
                 ddlLcr.getDdlText(),
-                ddlLcr.getCommandType());
+                ddlLcr.getCommandType(),
+                schema);
     }
 }
