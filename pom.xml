@@ -236,6 +236,10 @@
                 <configuration>
                     <tokenAuth>true</tokenAuth>
                     <publishingServerId>qianmoq-ossrh</publishingServerId>
+                    <!-- Release automatically once uploaded, without a manual click in the Central Portal.
+                         waitUntil=published makes the build reflect the real publish result. -->
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
                 </configuration>
             </plugin>
         </plugins>
