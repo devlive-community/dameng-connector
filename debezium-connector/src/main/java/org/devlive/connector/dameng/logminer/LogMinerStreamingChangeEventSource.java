@@ -131,6 +131,13 @@ public class LogMinerStreamingChangeEventSource
                 startScn = offsetContext.getScn();
                 createFlushTable(jdbcConnection);
 
+                // Make sure every captured table logs the before-image of all columns; otherwise an
+                // UPDATE only records the primary-key (and changed) columns and unchanged columns would
+                // be emitted as null (issue #17). Idempotent: it is skipped for tables already configured.
+                for (TableId tableId : schema.getTables().tableIds()) {
+                    LogMinerHelper.enableTableSupplementalLoggingAllColumns(jdbcConnection, tableId);
+                }
+
                 if (!isContinuousMining && startScn.compareTo(getFirstOnlineLogScn(jdbcConnection, archiveLogRetention)) < 0) {
                     throw new DebeziumException(
                             "Online REDO LOG files or archive log files do not contain the offset scn " + startScn + ".  Please perform a new snapshot.");

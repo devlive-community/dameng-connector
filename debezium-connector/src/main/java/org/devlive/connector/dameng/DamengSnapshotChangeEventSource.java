@@ -236,6 +236,13 @@ public class DamengSnapshotChangeEventSource<P extends Partition>
     protected void readTableStructure(ChangeEventSourceContext sourceContext, RelationalSnapshotContext<P, DamengOffsetContext> snapshotContext, DamengOffsetContext offsetContext)
             throws SQLException, InterruptedException
     {
+        // Ensure the captured tables record the before-image of every column in the redo log; otherwise
+        // an UPDATE only logs the primary-key (and changed) columns and the reconstructed after-image would
+        // contain null for every unchanged column (issue #17).
+        for (TableId tableId : snapshotContext.capturedTables) {
+            LogMinerHelper.enableTableSupplementalLoggingAllColumns(jdbcConnection, tableId);
+        }
+
         Set<String> schemas = snapshotContext.capturedTables.stream()
                 .map(TableId::schema)
                 .collect(Collectors.toSet());

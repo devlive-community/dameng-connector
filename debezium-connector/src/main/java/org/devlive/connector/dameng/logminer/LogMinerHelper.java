@@ -448,6 +448,41 @@ public class LogMinerHelper
         }
     }
 
+    /**
+     * Ensures table-level supplemental logging of {@code ALL} columns is enabled for the given table.
+     * <p>
+     * Without it, LogMiner only records the primary-key (and changed) columns for an {@code UPDATE}, so
+     * the reconstructed after-image would contain {@code null} for every unchanged column. That is the
+     * cause of <a href="https://github.com/devlive-community/dameng-connector/issues/17">issue #17</a>,
+     * where updating one field wiped the remaining fields to {@code null} in the target table.
+     * <p>
+     * The operation is best-effort: if it cannot be applied (e.g. insufficient privileges) a warning is
+     * logged with the manual statement to run, rather than failing the connector.
+     *
+     * @param connection the database connection; never null
+     * @param tableId the table to configure; never null
+     */
+    public static void enableTableSupplementalLoggingAllColumns(DamengConnection connection, TableId tableId)
+    {
+        try {
+            if (isTableSupplementalLogDataAll(connection, tableId)) {
+                LOGGER.debug("Supplemental logging (ALL) COLUMNS already enabled for table {}", tableId);
+                return;
+            }
+            // Build the target from schema/table only; the captured TableId also carries the catalog,
+            // which is not a valid qualifier for ALTER TABLE.
+            final String qualifiedName = "\"" + tableId.schema() + "\".\"" + tableId.table() + "\"";
+            final String sql = "ALTER TABLE " + qualifiedName + " ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS";
+            LOGGER.info("Enabling supplemental logging (ALL) COLUMNS for table {}: {}", tableId, sql);
+            connection.executeLegacy(sql);
+        }
+        catch (SQLException e) {
+            LOGGER.warn("Could not enable supplemental logging (ALL) COLUMNS for table {}. Updates may emit null for "
+                    + "unchanged columns. Please run manually: ALTER TABLE {}.{} ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS",
+                    tableId, tableId.schema(), tableId.table(), e);
+        }
+    }
+
     static boolean isTableSupplementalLogDataAll(DamengConnection connection, TableId tableId)
             throws SQLException
     {
