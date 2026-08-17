@@ -73,4 +73,27 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <resources>
+            <!-- Filter build.version so ${project.version} is substituted with the real version.
+                 Without this, Module.version() returns the literal "${project.version}", which leaks
+                 into change events and, under debezium-server/Quarkus, triggers a StackOverflowError
+                 during ${...} config expansion (issue #9). -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/build.version</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/build.version</exclude>
+                </excludes>
+            </resource>
+        </resources>
+    </build>
 </project>

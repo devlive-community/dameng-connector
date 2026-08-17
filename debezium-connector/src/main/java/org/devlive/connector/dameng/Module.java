@@ -22,7 +22,14 @@ public final class Module
 
     public static String version()
     {
-        return INFO.getProperty("version");
+        final String version = INFO.getProperty("version");
+        // Guard against an unresolved Maven filtering placeholder (e.g. "${project.version}") leaking
+        // into change events and, under debezium-server/Quarkus, triggering a StackOverflowError during
+        // ${...} config expansion (issue #9).
+        if (version == null || version.contains("${")) {
+            return "unknown";
+        }
+        return version;
     }
 
     /**
