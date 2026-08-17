@@ -4,7 +4,7 @@
     <groupId>org.devlive.connector</groupId>
     <artifactId>dameng-connector</artifactId>
     <packaging>pom</packaging>
-    <version>2026.0.0</version>
+    <version>2026.1.0</version>
 
     <name>dameng-connector</name>
     <description>Connector for dameng database</description>
