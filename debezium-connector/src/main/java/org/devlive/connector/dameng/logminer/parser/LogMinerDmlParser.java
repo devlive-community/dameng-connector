@@ -651,12 +651,15 @@ public class LogMinerDmlParser
                 }
             }
             else if (!inColumnValue && !inColumnName) {
-                if (c == 'a' && lookAhead == 'n' && sql.substring(index).startsWith(AND)) {
+                // Match AND/OR case-insensitively. LogMiner emits these keywords in upper case, but the
+                // previous lower-case char guard ('a'/'o') never matched, so the parser stopped after the
+                // first WHERE condition and left the "before" image with only the primary key (issue #10).
+                if (sql.regionMatches(true, index, AND, 0, AND.length())) {
                     index += 3;
                     start = index;
                     inColumnName = true;
                 }
-                else if (c == 'o' && lookAhead == 'r' && sql.substring(index).startsWith(OR)) {
+                else if (sql.regionMatches(true, index, OR, 0, OR.length())) {
                     index += 2;
                     start = index;
                     inColumnName = true;
