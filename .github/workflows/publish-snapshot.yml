@@ -1,0 +1,43 @@
+name: Publish Snapshot
+
+on:
+  push:
+    branches: [ dev ]
+  workflow_dispatch:
+
+jobs:
+  publish-snapshot:
+    name: Publish snapshot to Central Portal
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK and Maven settings
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'maven'
+          # Writes a settings.xml server entry matching the pom's publishingServerId
+          server-id: qianmoq-ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_SECRET }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Force a -SNAPSHOT version
+        # Turn the release version (e.g. 2026.0.0) into 2026.0.0-SNAPSHOT so the
+        # Central plugin routes the artifacts to the snapshot repository.
+        run: |
+          CURRENT=$(mvn -B -q -ntp help:evaluate -Dexpression=project.version -DforceStdout)
+          SNAPSHOT="${CURRENT%-SNAPSHOT}-SNAPSHOT"
+          echo "Publishing snapshot version: $SNAPSHOT"
+          mvn -B -ntp versions:set -DnewVersion="$SNAPSHOT" -DgenerateBackupPoms=false
+
+      - name: Deploy snapshot
+        run: mvn -B -ntp -Pdeploy clean deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSWORD }}
