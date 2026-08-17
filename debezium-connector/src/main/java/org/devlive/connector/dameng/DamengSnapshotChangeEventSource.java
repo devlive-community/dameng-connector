@@ -272,7 +272,9 @@ public class DamengSnapshotChangeEventSource<P extends Partition>
         String snapshotOffset = (String) snapshotContext.offset.getOffset().get(SourceInfo.SCN_KEY);
         String token = connectorConfig.getTokenToReplaceInSnapshotPredicate();
         if (token != null) {
-            return overriddenSelect.replaceAll(token, " AS OF SCN " + snapshotOffset);
+            // When flashback is disabled, drop the AS OF SCN clause from the overridden select.
+            String replacement = connectorConfig.isSnapshotFlashbackQuery() ? " AS OF SCN " + snapshotOffset : "";
+            return overriddenSelect.replaceAll(token, replacement);
         }
         return overriddenSelect;
     }
@@ -325,6 +327,11 @@ public class DamengSnapshotChangeEventSource<P extends Partition>
         final String snapshotOffset = offset.getScn().toString();
         if (snapshotOffset == null) {
             throw new IllegalStateException("Snapshot offset cannot be null");
+        }
+        // Dameng advises against flashback for performance reasons; when disabled, read the table as-is
+        // without AS OF SCN. Changes made during the snapshot are replayed from the streaming phase.
+        if (!connectorConfig.isSnapshotFlashbackQuery()) {
+            return Optional.of("SELECT * FROM " + quote(tableId));
         }
         return Optional.of("SELECT * FROM " + quote(tableId) + " AS OF SCN " + snapshotOffset);
     }

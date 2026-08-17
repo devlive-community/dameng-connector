@@ -116,6 +116,20 @@ public class DamengConnectorConfig
             .withWidth(Width.MEDIUM)
             .withImportance(Importance.HIGH)
             .withDescription("A token to replace on snapshot predicate template");
+    public static final Field SNAPSHOT_FLASHBACK_QUERY = Field.create("snapshot.flashback.enabled")
+            .withDisplayName("Use a flashback (AS OF SCN) query during snapshot")
+            .withType(Type.BOOLEAN)
+            .withWidth(Width.SHORT)
+            .withImportance(Importance.MEDIUM)
+            .withDefault(true)
+            .withValidation(Field::isBoolean)
+            .withDescription("Whether the initial snapshot reads each table with a flashback query "
+                    + "('SELECT * FROM table AS OF SCN <scn>'). When enabled (the default) the snapshot is "
+                    + "consistent with the SCN at which streaming resumes. Dameng advises against flashback due "
+                    + "to its performance overhead, so setting this to 'false' issues a plain 'SELECT * FROM table' "
+                    + "without AS OF SCN; the snapshot is then not point-in-time consistent, but any changes made "
+                    + "during the snapshot are replayed from the streaming phase (at-least-once), which is safe for "
+                    + "idempotent sinks that upsert by primary key.");
     public static final Field LOG_MINING_HISTORY_RECORDER_CLASS = Field.create("log.mining.history.recorder.class")
             .withDisplayName("Log Mining History Recorder Class")
             .withType(Type.STRING)
@@ -292,6 +306,7 @@ public class DamengConnectorConfig
                     ORACLE_VERSION)
             .connector(
                     SNAPSHOT_ENHANCEMENT_TOKEN,
+                    SNAPSHOT_FLASHBACK_QUERY,
                     RAC_SYSTEM,
                     RAC_NODES,
                     LOG_MINING_HISTORY_RECORDER_CLASS,
@@ -335,6 +350,7 @@ public class DamengConnectorConfig
     private final Duration logMiningTransactionRetention;
     private final Long autoCommitTimeout;
     private final LogMiningDmlParser dmlParser;
+    private final boolean snapshotFlashbackQuery;
 
     public DamengConnectorConfig(Configuration config)
     {
@@ -358,6 +374,7 @@ public class DamengConnectorConfig
         this.logMiningHistoryRecorder = resolveLogMiningHistoryRecorder(config);
         this.jdbcConfig = config.subset(DATABASE_CONFIG_PREFIX, true);
         this.snapshotEnhancementToken = config.getString(SNAPSHOT_ENHANCEMENT_TOKEN);
+        this.snapshotFlashbackQuery = config.getBoolean(SNAPSHOT_FLASHBACK_QUERY);
 
         // LogMiner
         this.connectorAdapter = ConnectorAdapter.parse(config.getString(CONNECTOR_ADAPTER));
@@ -455,6 +472,16 @@ public class DamengConnectorConfig
     public SnapshotMode getSnapshotMode()
     {
         return snapshotMode;
+    }
+
+    /**
+     * Whether the initial snapshot should read tables with a flashback ({@code AS OF SCN}) query.
+     *
+     * @return {@code true} to use a flashback query (default), {@code false} for a plain select
+     */
+    public boolean isSnapshotFlashbackQuery()
+    {
+        return snapshotFlashbackQuery;
     }
 
     /**
