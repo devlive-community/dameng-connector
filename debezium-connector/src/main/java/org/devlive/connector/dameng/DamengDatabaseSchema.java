@@ -34,16 +34,25 @@ public class DamengDatabaseSchema
             DamengConnection connection)
     {
         super(connectorConfig, topicSelector, connectorConfig.getTableFilters().dataCollectionFilter(), connectorConfig.getColumnFilter(),
-                new TableSchemaBuilder(
-                        new DamengValueConverters(connectorConfig, connection),
-                        schemaNameAdjuster,
-                        connectorConfig.customConverterRegistry(),
-                        connectorConfig.getSourceInfoStructMaker().schema(),
-                        connectorConfig.getSanitizeFieldNames(),
-                        false
-                ),
+                buildTableSchemaBuilder(connectorConfig, schemaNameAdjuster, connection),
                 connection.getTablenameCaseInsensitivity(connectorConfig),
                 connectorConfig.getKeyMapper());
+    }
+
+    private static TableSchemaBuilder buildTableSchemaBuilder(DamengConnectorConfig connectorConfig, SchemaNameAdjuster schemaNameAdjuster,
+            DamengConnection connection)
+    {
+        DamengValueConverters valueConverters = new DamengValueConverters(connectorConfig, connection);
+        return new TableSchemaBuilder(
+                valueConverters,
+                // Resolve column default values into the schema's Java type; without this Debezium
+                // uses the pass-through converter and fails for defaults like SYSDATE on TIMESTAMP columns.
+                new DamengDefaultValueConverter(valueConverters),
+                schemaNameAdjuster,
+                connectorConfig.customConverterRegistry(),
+                connectorConfig.getSourceInfoStructMaker().schema(),
+                connectorConfig.getSanitizeFieldNames(),
+                false);
     }
 
     public Tables getTables()
