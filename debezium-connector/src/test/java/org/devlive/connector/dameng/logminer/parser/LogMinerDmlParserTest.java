@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests for {@link LogMinerDmlParser}, focused on the WHERE-clause (before image) parsing that
@@ -81,6 +82,34 @@ public class LogMinerDmlParserTest
         Map<String, Object> before = toMap(entry.getOldValues());
         assertEquals("14", before.get("ID"));
         assertEquals("aaa", before.get("NAME"));
+        assertEquals("25", before.get("AGE"));
+    }
+
+    @Test
+    public void whereClauseShouldHandleOrConditions()
+    {
+        final String sql = "DELETE FROM \"TEST\".\"T00003\" "
+                + "WHERE \"ID\" = 14 OR \"NAME\" = 'aaa' OR \"AGE\" = 25;";
+
+        LogMinerDmlEntry entry = parser.parse(sql, table(), TX_ID);
+
+        Map<String, Object> before = toMap(entry.getOldValues());
+        assertEquals("14", before.get("ID"));
+        assertEquals("aaa", before.get("NAME"));
+        assertEquals("25", before.get("AGE"));
+    }
+
+    @Test
+    public void whereClauseShouldHandleIsNull()
+    {
+        final String sql = "DELETE FROM \"TEST\".\"T00003\" "
+                + "WHERE \"ID\" = 14 AND \"NAME\" IS NULL AND \"AGE\" = 25;";
+
+        LogMinerDmlEntry entry = parser.parse(sql, table(), TX_ID);
+
+        Map<String, Object> before = toMap(entry.getOldValues());
+        assertEquals("14", before.get("ID"));
+        assertNull(before.get("NAME"));
         assertEquals("25", before.get("AGE"));
     }
 }
